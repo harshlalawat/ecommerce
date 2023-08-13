@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECommerce Store</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <% if(username){ %>
+      <div>
+        <h1>Welcome <%= username %> to Our Shoes Store</h1>
+      </div>
+      <div class="button-container right-button-container">
+        <a href="/cart" class="button right-button">Cart</a>
+        <a href="/logout" class="button right-button">Log out</a>
+      </div>
+      <% }else{ %>
+        <div>
+          <h1>Welcome to Our Shoes Store</h1>
+        </div>
+        <div class="button-container right-button-container">
+            <a href="/login" class="button right-button">Log In</a>
+            <a href="/signup" class="button right-button">Create Account</a>
+      </div>
+    <% } %>
+  </header>

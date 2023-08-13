@@ -1,0 +1,160 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    background-image: url("/2593044.jpg");
+    background-size: cover;
+}
+
+header {
+    background-color: rgb(0, 0, 0 ,0.6);
+    color: #fff;
+    padding: 10px 10%;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.container {
+    text-align: center;
+    margin: 0 auto;
+    padding: 5px;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #555;
+}
+
+.right-button-container{
+    padding : 0 0 0 20% ;
+    margin: auto;
+    float : left;
+}
+
+.right-button{
+    background-color: #fff;
+    color: #000;
+    margin:0 5px;
+    align-items:end;
+    justify-content: end;
+}
+
+.right-button:hover{
+    background-color: #999;
+}
+
+
+
+/* Basic styling for the products container */
+.products-container {
+
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+margin: 20px;
+}
+
+.product {
+    background-color: white;
+border: 1px solid #ccc;
+border-radius: 5px;
+padding: 10px 0;
+width: calc(20% - 20px);
+text-align: center;
+margin: 1rem 0;
+}
+
+.product img {
+max-width: 100%;
+height: 10rem;
+}
+
+#load-more-button {
+display: block;
+margin: 20px auto;
+}
+
+
+
+/* popup styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1; 
+    left: 30%;
+    top: 15.5%;
+    width: 30%;
+    height: auto;
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 0 0;
+    border: 1px solid #888;
+    width: 100%; 
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 1s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+  
+  @-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+  }
+  
+  @keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    margin-right: 0.7rem;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .popup-product {
+    background-color: white;
+border: 1px solid #ccc;
+width: 100%;
+border-radius: 5px;
+text-align: center;
+}
+
+.popup-product img{
+    max-width: 100%;
+    height: 15rem;
+}

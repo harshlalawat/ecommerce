@@ -1,0 +1,92 @@
+[
+    {
+        "name": "Nike Air Force 1",
+        "image": "product1.jpeg",
+        "price": "₹ 999",
+        "details": "The Nike Air Force 1 is a classic basketball-inspired sneaker known for its clean and versatile design. It features a durable leather upper, cushioned midsole, and iconic Air-Sole unit for comfort and support."
+    },
+    {
+        "name": "Adidas Ultraboost",
+        "image": "product2.jpg",
+        "price": "₹ 999",
+        "details": "The Adidas Ultraboost is a popular running shoe with a responsive Boost midsole that offers excellent energy return. Its flexible Primeknit upper adapts to your foot's movements, providing a snug fit and breathability."
+    },
+    {
+        "name": "Converse Chuck Taylor All Star",
+        "image": "product3.jpeg",
+        "price": "₹ 999",
+        "details": "A timeless casual sneaker, the Converse Chuck Taylor All Star is known for its canvas upper, rubber toe cap, and iconic high-top silhouette. It's a versatile choice for everyday wear."
+    },
+    {
+        "name": "Vans Old Skool",
+        "image": "product4.jpg",
+        "price": "₹ 999",
+        "details": "The Vans Old Skool is a classic skateboarding shoe featuring a suede/canvas upper, iconic side stripe, and comfortable padded collar. Its low-top design makes it suitable for both skating and street style."
+    },
+    {
+        "name": "Timberland 6-Inch Premium Boot",
+        "image": "product5.webp",
+        "price": "₹ 999",
+        "details": "The Timberland 6-Inch Premium Boot is a rugged and waterproof boot crafted with premium leather. It's known for its durability, anti-fatigue technology, and iconic padded collar."
+    },
+    {
+        "name": "Puma Suede Classic",
+        "image": "product6.webp",
+        "price": "₹ 999",
+        "details": "The Puma Suede Classic is a retro-style sneaker featuring a suede upper, rubber sole, and timeless design. It's a versatile option that can be dressed up or down."
+    },
+    {
+        "name": "Reebok Classic Leather",
+        "image": "product7.webp",
+        "price": "₹ 999",
+        "details": "The Reebok Classic Leather is an iconic athletic shoe with a leather upper, EVA midsole for cushioning, and a vintage aesthetic that's popular for streetwear."
+    },
+    {
+        "name": "New Balance 990",
+        "image": "product8.jpeg",
+        "price": "₹ 999",
+        "details": "The New Balance 990 is a heritage-inspired sneaker known for its comfortable fit and premium materials. It features a mesh and suede upper, ABZORB midsole for cushioning, and ENCAP technology for support."
+    },
+    {
+        "name": "Gucci Ace Sneakers",
+        "image": "product9.jpeg",
+        "price": "₹ 999",
+        "details": "The Gucci Ace Sneakers are luxury low-top sneakers with a distinctive design featuring the brand's signature stripes and embroidered motifs. They're a blend of high fashion and casual style."
+    },
+    {
+        "name": "Balenciaga Triple S",
+        "image": "product10.webp",
+        "price": "₹ 999",
+        "details": "The Balenciaga Triple S gained fame for its chunky, oversized sole and layered upper. It's a bold and avant-garde choice that has become an icon in the 'dad shoe' trend."
+    },
+    {
+        "name": "Clarks Desert Boot",
+        "image": "product11.webp",
+        "price": "₹ 999",
+        "details": "The Clarks Desert Boot is a classic chukka boot featuring a crepe sole and suede or leather upper. It's a versatile and timeless option that can be dressed up or down."
+    },
+    {
+        "name": "Dr. Martens 1460",
+        "image": "product12.jpeg",
+        "price": "₹ 999",
+        "details": "The Dr. Martens 1460 is an iconic lace-up boot known for its durable leather construction, distinctive yellow stitching, and air-cushioned sole. It has a rebellious and punk-inspired aesthetic."
+    },
+    {
+        "name": "Cole Haan Zerogrand Wingtip Oxford",
+        "image": "product13.webp",
+        "price": "₹ 999",
+        "details": "The Cole Haan Zerogrand Wingtip Oxford combines classic brogue detailing with modern comfort. It features a lightweight and flexible sole, making it a versatile option for both formal and casual occasions."
+    },
+    {
+        "name": "Allen Edmonds Strand",
+        "image": "product14.jpeg",
+        "price": "₹ 999",
+        "details": "The Allen Edmonds Strand is a high-quality dress shoe with a timeless cap-toe design. Handcrafted using premium leather, it's suitable for business attire and formal events."
+    },
+    {
+        "name": "Salvatore Ferragamo Gancini Bit Loafer",
+        "image": "product15.jpeg",
+        "price": "₹ 999",
+        "details": "This luxury loafer from Salvatore Ferragamo features the brand's iconic Gancini bit hardware. Crafted with attention to detail, it's a sophisticated choice for adding a touch of elegance to your outfit."
+    }
+]

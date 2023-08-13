@@ -1,0 +1,72 @@
+<%- include("partials/header.ejs", {username: username}) -%>
+
+<style>
+    .login-container{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+  }
+  
+  .signUp-container {
+    color: black;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 4rem;
+    text-align: center;
+  }
+  
+  .sign-in-form {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
+
+
+<div class="login-container">
+    <div class="signUp-container">
+        <form class="sign-in-form" method="post" action="/signup">
+            <h1>Sign Up</h1>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <% if(isAlreadyRegistered){ %>
+                  <p style="color: red">User already registered</p>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="button">Register</button>
+        </form>
+    </div>
+</div>
+
+
+<%- include("partials/footer.ejs") -%>

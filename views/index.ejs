@@ -1,0 +1,35 @@
+<%- include("partials/header.ejs", {username: username}) -%>
+
+<% if(username){ %>
+
+    <div class="products-container" id="products-container">
+
+    </div>
+    <button id="load-more-button" class="button right-button">Load more products</button>
+    
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="popup-product">
+              <span class="close">&times;</span>
+              <h2 id="modal-h2"></h2>
+            <img id="modal-img" src="">
+            <h3 id="modal-h3"></h3>
+            <p id="modal-p"></p>
+        </div>
+        </div>
+    </div>
+
+
+    <% }else{ %>
+
+
+      <div class="container">
+          <h2>Log in or Create a New Account</h2>
+      </div>
+
+
+  <% } %>
+
+
+<%- include("partials/footer.ejs") -%>
+
