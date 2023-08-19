@@ -1,0 +1,70 @@
+<%- include("partials/header.ejs", {username: username}) -%>
+
+<style>
+.reset-parent-container {
+  font-family: Arial, sans-serif;
+  margin: auto 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+}
+
+.reset-password-container {
+  margin: auto 0;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 4rem;
+  text-align: center;
+}
+
+.reset-form {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkbox-form-group{
+    text-align: left;
+}
+</style>
+
+<div class="reset-parent-container">
+    <div class="reset-password-container">
+      <form class="reset-form" method="post" action="/resetpassword">
+        <h1>Reset Password</h1>
+        <div class="form-group">
+          <input type="password" id="newPassword" name="newPassword" placeholder="New password" required>
+          <p id="strong-password-p" style="color: red; font-size: x-small;"></p>
+        </div>
+        <div class="form-group">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+        </div>
+        <div class="form-group checkbox-form-group">
+            <p id="reset-error-p" style="color: red"></p>
+            <input type="checkbox" onclick="myFunction()">Show Password
+        </div>
+        <button type="submit" class="button" id="reset-button">Reset password</button>
+      </form>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") -%>

@@ -99,3 +99,51 @@ function popupContent(name, image, price, details){
     document.getElementById("modal-h3").innerText = price;
     document.getElementById("modal-p").innerText = details;
 }
+
+const input1 = document.getElementById('newPassword');
+const input2 = document.getElementById('confirmPassword');
+const signupPasswordInput = document.getElementById("signup-password");
+
+function myFunction() {
+    if (input1.type === "password") {
+      input1.type = "text";
+      input2.type = "text";
+    } else {
+      input1.type = "password";
+      input2.type = "password";
+    }
+  }
+
+const submitButton = document.getElementById('reset-button');
+const signupSubmitButton = document.getElementById('signup-submit-button');
+
+input2?.addEventListener('input', checkInputs);
+signupPasswordInput?.addEventListener('input', validatePassword);
+    
+function validatePassword(){
+    console.log(signupPasswordInput.value);
+    if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,15}$/.test(signupPasswordInput.value)){
+        signupSubmitButton.disabled = false;
+        document.getElementById("signup-strong-password").innerText = "";
+    } else {
+        signupSubmitButton.disabled = true;
+        document.getElementById("signup-strong-password").innerText = "Must contain a uppercase, lowercase, number and minimum 8 characters";
+    }
+}    
+
+
+function checkInputs() {
+    if (input1.value === input2.value) {
+        if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,15}$/.test(input1.value)){
+            submitButton.disabled = false;
+            document.getElementById("strong-password-p").innerText = "";
+        } else {
+            submitButton.disabled = true;
+            document.getElementById("strong-password-p").innerText = "Must contain a uppercase, lowercase, number and minimum 8 characters";
+        }
+        document.getElementById("reset-error-p").innerText = "";
+    }else{
+        submitButton.disabled = true;
+        document.getElementById("reset-error-p").innerText = "Password doesn't match";
+    }
+}

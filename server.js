@@ -5,10 +5,13 @@ const db = require('./database/db');
 const ecommerceModel = require("./database/User");
 const mongoose = require("mongoose");
 const fs = require('fs');
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 
 let isAlreadyRegistered=false;
-let isNotValid = false;
+let erError= null;
+let emailValid= true;
 
 app.use(function(req, res, next){
     console.log(req.method, req.url);
@@ -25,6 +28,18 @@ app.use(session({
     saveUninitialized: true
   }))
 
+
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: 'harshlalawathlhl@gmail.com',
+      pass: process.env.PASSWORD
+    }
+  });
+
+
+
 app.get("/", function(req, res){
     res.render("index", {username : req.session.username});
 })
@@ -33,13 +48,52 @@ app.get("/login", function(req, res){
     if(req.session.username){
         res.redirect("/");
     }else{
-        if(isNotValid){
-            isNotValid = false;
-            res.render("login", {isNotValid: true, username: req.session.username});
+        let newError = erError;
+        erError = null;
+        res.render("login", {username: req.session.username, error: newError});
+    }
+})
+
+
+app.get("/validate/:userId", function(req, res){
+    ecommerceModel.find({_id: req.params.userId}).then(function(userData){
+        if(userData.length){
+            ecommerceModel.updateOne({_id: req.params.userId}, {isVerified: true}).then(function(){
+                res.redirect("/login");    
+            }).catch(function(err){
+                console.log(err);
+            })
         }else{
-            res.render("login", {isNotValid: false, username: req.session.username});
+            erError = "Invalid user";
+            res.redirect("/login");
+        }
+    })
+})
+
+app.get("/forgotpassword",function(req, res){
+    if(req.session.username){
+        res.redirect("/")
+    }else{
+        if(emailValid){
+            res.render("forgotpassword", {username : req.session.username, error:null})
+        }else{
+            emailValid = true;
+            res.render("forgotpassword", {username : req.session.username, error: "Invalid email"})
         }
     }
+})
+
+
+app.get("/resetpassword/:userId", function(req, res){
+    ecommerceModel.find({_id: req.params.userId}).then(function(userData){
+        if(userData.length){
+            req.session.identity = req.params.userId;
+            res.render("reset", {username : req.session.username});   
+        }else{
+            erError = "Invalid user";
+            res.redirect("/login");
+        }
+    })
 })
 
 
@@ -59,7 +113,6 @@ app.get("/signup", function(req, res){
 
 app.get("/products", function(req, res){
     getProducts(function(err, products){
-        // console.log(products);
         if(err){
             res.status(500);
             res.json({error: err})
@@ -72,8 +125,7 @@ app.get("/products", function(req, res){
 
 app.post("/signup", function(req, res){
     let data = req.body;
-    ecommerceModel.find(data).then(function(users){
-        console.log(users[0]);
+    ecommerceModel.find({email: data.email}).then(function(users){
         if(users[0]){
             isAlreadyRegistered = true;
             res.redirect("/signup");
@@ -81,22 +133,67 @@ app.post("/signup", function(req, res){
             isAlreadyRegistered = false;
             const newUser = new ecommerceModel(data);
             newUser.save();
-            res.redirect("/login");
+            ecommerceModel.find(data).then(function(user){
+                validate(user[0].email, user[0]._id).then(() => {
+                    console.log("successful send mail")
+                    res.redirect("/login");
+                  })
+                  .catch((err) => {
+                    console.log(err.statusCode);
+                    console.log(err);
+                  });
+            })
         }
-    })
+    }) 
 })
+
+
+
+app.post("/resetpassword", function(req, res){
+    let data = req.body;
+    ecommerceModel.updateOne({_id: req.session.identity},{password: data.confirmPassword}).then();
+    res.redirect("/login");
+})
+
+
+
+app.post("/forgotpassword", function(req, res){
+    let data = req.body;
+    ecommerceModel.find(data).then(function(users){
+        if(users.length){
+            resetPassword(users[0].email, users[0]._id).then(() => {
+                console.log("successful send reset password mail")
+                res.redirect("/login");
+                })
+                .catch((err) => {
+                console.log(err.statusCode);
+                console.log(err);
+            });
+        }else{
+            emailValid = false;
+            res.redirect("/forgotpassword");
+        }
+    }) 
+})
+
+
 
 app.post("/login", function(req, res){
     const data = req.body;
-    const username = data.username;
+    const email = data.email;
     const password = data.password;
-    ecommerceModel.find(data).then(function(users){
+    ecommerceModel.find({email: email, password: password}).then(function(users){
         if(users[0]){
-            isNotValid = false;
-            req.session.username = username;
-            res.redirect("/");
+            if(users[0].isVerified){
+                erError = null;
+                req.session.username = users[0].username;
+                res.redirect("/");
+            }else{
+                erError = "Please verify your email first";
+                res.redirect("/login");
+            }
         }else{
-            isNotValid = true;
+            erError = "Invalid email/password";
             res.redirect("/login");
         }
     })
@@ -140,4 +237,25 @@ function getProducts(callback){
             }
         }
     })
+}
+
+
+async function validate(email, id) {
+    const info = await transporter.sendMail({
+      from: '"Shoes store" <harshlalawathlhl@gmail.com>',
+      to: email,
+      subject: "Activate your shoes store account",
+      html: `<h3>Dear customer,<a href= "http://localhost:3000/validate/${id}">Click here</a>! to activate your account</h3>`,
+    });
+}
+
+
+
+async function resetPassword(email, id) {
+    const info = await transporter.sendMail({
+      from: '"Shoes store" <harshlalawathlhl@gmail.com>',
+      to: email,
+      subject: "Reset your shoes store password",
+      html: `<h3>Dear customer,<a href= "http://localhost:3000/resetpassword/${id}">Click here</a>! to reset your password</h3>`,
+    });
 }
