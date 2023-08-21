@@ -111,6 +111,19 @@ app.get("/signup", function(req, res){
 })
 
 
+app.get("/cart", function(req, res){
+    if(req.session.username){
+        ecommerceModel.findOne({email: req.session.email}).then(function(user){
+            if(user){
+                res.render("cart", {username: req.session.username, cartItems: user.cart});
+            }
+        })
+    }else{
+        res.redirect("/login");
+    }
+})
+
+
 app.get("/products", function(req, res){
     getProducts(function(err, products){
         if(err){
@@ -122,6 +135,162 @@ app.get("/products", function(req, res){
         }
     })
 })
+
+
+
+app.post("/addToCart", function(req, res){
+    if(req.session.username){
+        const productToAddInCart = req.body.ProductToAddInCart ;
+        ecommerceModel.find({email: req.session.email}).then(function(users){
+            if(users.length){
+                let productAlreadyAdded= false;
+                const user = users[0];
+                let updatedCart = [];
+                updatedCart = user.cart.filter((product)=>{
+                    if(product.name === productToAddInCart){
+                        productAlreadyAdded = true;
+                        product.quantity++;
+                    }
+                    return product;
+                })
+                if(!productAlreadyAdded){
+                    getProducts(function(err, products){
+                        if(err){
+                            throw new Error("Something went wrong in adding item to cart")
+                        }else{
+                            let productObject = {
+                                name: productToAddInCart,
+                                quantity : 1,
+                                
+                            }
+                            products.forEach(function(element){
+                                if(element.name === productObject.name){
+                                    productObject.price = element.price;
+                                    productObject.image = element.image
+                                }
+                            })
+                            updatedCart.push(productObject);
+                            ecommerceModel.updateOne({email: req.session.email}, {cart: updatedCart}).then(function(){
+                                res.status(200);
+                                res.json();
+                            });
+                        }
+                    })
+                }else{
+                    ecommerceModel.updateOne({email: req.session.email}, {cart: updatedCart}).then(function(){
+                        res.status(200);
+                        res.json();
+                    });
+                }
+            }else{
+                throw new Error("Something went wrong in adding product to cart")
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
+
+
+app.post("/cartItemDelete", function(req, res){
+    if(req.session.username){
+        const productToDeleteInCart = req.body.ProductToDeleteInCart ;
+        ecommerceModel.find({email: req.session.email}).then(function(users){
+            if(users.length){
+                const user = users[0];
+                let updatedCart = [];
+                updatedCart = user.cart.filter((product)=>{
+                    if(product.name != productToDeleteInCart){
+                        return product;
+                    }
+                })
+                ecommerceModel.updateOne({email: req.session.email}, {cart: updatedCart}).then();
+                res.status(200);
+                res.json();
+            }else{
+                throw new Error("Something went wrong in deleting product to cart")
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
+
+app.post("/increaseProductNumber", function(req, res){
+    if(req.session.username){
+        const ProductToIncreaseInCart = req.body.ProductToIncreaseInCart ;
+        let stock = 0;
+        getProducts(function(err, products){
+            if(err){
+                console.log(err);
+            }else{
+                products.forEach(function(element){
+                    if(element.name === ProductToIncreaseInCart){
+                        stock = element.stock;
+                    }
+                })
+            }
+        })
+        ecommerceModel.find({email: req.session.email}).then(function(users){
+            if(users.length){
+                const user = users[0];
+                let updatedCart = [];
+                updatedCart = user.cart.filter((product)=>{
+                    if(product.name === ProductToIncreaseInCart){    
+                        if(product.quantity < stock){
+                            product.quantity +=1;
+                        }
+                    }
+                    return product;
+                })
+                ecommerceModel.updateOne({email: req.session.email}, {cart: updatedCart}).then(function(){
+                    res.status(200);
+                    res.json();
+                });
+            }else{
+                throw new Error("Something went wrong in deleting product to cart")
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
+
+app.post("/decreaseProductNumber", function(req, res){
+    if(req.session.username){
+        const ProductToDecreaseInCart = req.body.ProductToDecreaseInCart ;
+        ecommerceModel.find({email: req.session.email}).then(function(users){
+            if(users.length){
+                const user = users[0];
+                let updatedCart = [];
+                updatedCart = user.cart.filter((product)=>{
+                    if(product.name === ProductToDecreaseInCart){ 
+                        if(product.quantity > 1){
+                            product.quantity -=1;
+                        } 
+                    }
+                    return product;
+                })
+                ecommerceModel.updateOne({email: req.session.email}, {cart: updatedCart}).then(function(){
+                    res.status(200);
+                    res.json();
+                });
+            }else{
+                throw new Error("Something went wrong in deleting product to cart")
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
 
 app.post("/signup", function(req, res){
     let data = req.body;
@@ -187,6 +356,7 @@ app.post("/login", function(req, res){
             if(users[0].isVerified){
                 erError = null;
                 req.session.username = users[0].username;
+                req.session.email = users[0].email;
                 res.redirect("/");
             }else{
                 erError = "Please verify your email first";
@@ -200,6 +370,7 @@ app.post("/login", function(req, res){
 
 })
 
+
 app.get('/logout',  function (req, res, next)  {
     if (req.session) {
       req.session.destroy(function (err) {
@@ -211,6 +382,8 @@ app.get('/logout',  function (req, res, next)  {
       });
     }
   });
+
+
 
 db.init().then(function(){
     app.listen(3000, function(){
@@ -238,6 +411,7 @@ function getProducts(callback){
         }
     })
 }
+
 
 
 async function validate(email, id) {

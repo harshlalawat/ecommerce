@@ -19,6 +19,10 @@
         </div>
     </div>
 
+  <script>
+    document.getElementById("change-button").setAttribute("href", "/cart");
+    document.getElementById("change-button").innerText = "Cart";
+  </script>
 
     <% }else{ %>
 
@@ -28,7 +32,25 @@
       </div>
 
 
+      <div class="products-container" id="products-container">
+
+      </div>
+      <button id="load-more-button" class="button right-button">Load more products</button>
+      
+      <div id="myModal" class="modal">
+          <div class="modal-content">
+              <div class="popup-product">
+                <span class="close">&times;</span>
+                <h2 id="modal-h2"></h2>
+              <img id="modal-img" src="">
+              <h3 id="modal-h3"></h3>
+              <p id="modal-p"></p>
+          </div>
+          </div>
+      </div>
+
   <% } %>
+  
 
 
 <%- include("partials/footer.ejs") -%>
