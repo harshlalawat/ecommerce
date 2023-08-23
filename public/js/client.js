@@ -105,6 +105,79 @@ function handleAddCartButton(clickedItem){
 }
 
 
+function handleDeleteProductButton(clickedItem){
+    let clickedProductTitle = clickedItem.parentElement.getElementsByTagName("img")[0].scr;
+
+    fetch("/addToCart",
+        {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ProductToAddInCart : clickedProductTitle})
+        })
+        .then(function(response){
+            if(response.status !== 200){
+                if(response.status === 301){
+                    window.location.href = "/login"
+                }else{
+                    console.log("Something went wrong in adding product to cart");
+                } 
+            }else{
+                window.location.href = "/cart"
+            }
+        })
+}
+
+
+function handleUpdateProductButton(clickedItem){
+    let Image = clickedItem.parentElement.parentElement.getElementsByTagName("img")[0].getAttribute("src");
+    let Name = clickedItem.parentElement.parentElement.getElementsByTagName("input")[0].value;
+    let Price = clickedItem.parentElement.parentElement.getElementsByTagName("input")[1].value;
+    let Stock = clickedItem.parentElement.parentElement.getElementsByTagName("input")[2].value;
+    let Details = clickedItem.parentElement.parentElement.getElementsByTagName("textarea")[0].value;
+
+    fetch("/updateProduct",
+        {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({image: Image, name: Name, price: Price, stock: Stock, details: Details})
+        })
+        .then(function(response){
+            if(response.status !== 200){
+                if(response.status === 301){
+                    window.location.href = "/login"
+                }else{
+                    console.log("Something went wrong in updating product");
+                } 
+            }else{
+                window.location.href = "/admin"
+            }
+        })
+}
+
+
+function handleDeleteProductButton(clickedItem){
+    let Image = clickedItem.parentElement.parentElement.getElementsByTagName("img")[0].getAttribute("src");
+
+    fetch("/deleteProduct",
+        {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({image: Image})
+        })
+        .then(function(response){
+            if(response.status !== 200){
+                if(response.status === 301){
+                    window.location.href = "/login"
+                }else{
+                    console.log("Something went wrong in deleting product");
+                } 
+            }else{
+                window.location.href = "/admin"
+            }
+        })
+}
+
+
 function handleDeleteItemButton(clickedItem){
     let clickedProductTitle = clickedItem.parentElement.getElementsByTagName("h3")[0].innerText;
     fetch("/cartItemDelete",
@@ -241,3 +314,56 @@ function checkInputs() {
 }
 
 
+//input image size validation
+fileValidation = () => {
+    const fi = document.getElementById('addProductImage');
+    const btn = document.getElementById('addNewProductButton');
+    let filePath = fi.value;
+    let allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+             
+    if (filePath && allowedExtensions.exec(filePath)) {
+        if (fi.files.length > 0) {
+            for (let i = 0; i <= fi.files.length - 1; i++) {
+     
+                const fsize = fi.files.item(i).size;
+                const file = Math.round((fsize / 1024));
+                if (file >= 250 || file<1) {
+                    document.getElementById("new-product-validation").innerText = "Size must less than 250Kb";
+                } else {
+                    document.getElementById("new-product-validation").innerText = "";
+                }
+            }
+        }
+    }else{
+        btn.disabled = true;        
+        document.getElementById("new-product-validation").innerText = "Type must be jpeg/jpg/png";
+    }
+}
+
+
+//input fields validation
+const addForm = document.getElementById("addForm");
+if(addForm){
+    let u = document.getElementById("addProductImage").value;
+    let w = document.getElementById("addProductName").value;
+    let x = document.getElementById("addProductPrice").value;
+    let y = document.getElementById("addProductStock").value;
+    let z = document.getElementById("addProductDetails").value;
+    const btn = document.getElementById('addNewProductButton');
+    if(!u && !w && !x && !y && !z){
+        btn.disabled = true;
+        btn.addEventListener("mouseover", ()=>{
+            document.getElementById("new-product-validation").innerText = "All fields must be filled";
+            u = document.getElementById("addProductImage").value;
+            w = document.getElementById("addProductName").value;
+            x = document.getElementById("addProductPrice").value;
+            y = document.getElementById("addProductStock").value;
+            z = document.getElementById("addProductDetails").value;
+            if(u && w && x && y && z){
+                document.getElementById("new-product-validation").innerText = "";
+                btn.disabled = false;
+
+            }
+        })
+    }
+}

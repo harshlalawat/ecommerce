@@ -5,8 +5,10 @@ const db = require('./database/db');
 const ecommerceModel = require("./database/User");
 const mongoose = require("mongoose");
 const fs = require('fs');
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer"); 
+const multer = require("multer");
 require("dotenv").config();
+const notifier = require('node-notifier');
 
 
 let isAlreadyRegistered=false;
@@ -20,6 +22,8 @@ app.use(function(req, res, next){
 
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
+const upload = multer({ dest: 'public/' });
+app.use(upload.single("productImage"));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(session({
@@ -124,6 +128,52 @@ app.get("/cart", function(req, res){
 })
 
 
+app.get("/admin", function(req, res){
+    if(req.session.username){
+        ecommerceModel.findOne({email: req.session.email}).then(function(user){
+            if(user.isAdmin){
+                getProducts(function(err, products){
+                    if(err){
+                        throw new Error("Something went wrong in admin page");
+                    }else{
+                        res.render("admin", {username: req.session.username, products: products});
+                    }
+                })
+            }else{
+                notifier.notify({
+                    title: 'ERROR 401!',
+                    message: 'You are not authorized to view this page. This page is for admin only',
+                    sound: true,
+                    wait: true
+                  })
+                res.redirect("/");
+            }
+        })
+    }else{
+        res.redirect("/login");
+    }
+})
+
+
+app.post("/addProduct", function(req, res){
+    if(req.session.username){
+        if(req.file){
+            addNewProduct(req.body, req.file.filename, function(err){
+                if(err){
+                    throw new Error("Something went wrong in adding a new product");
+                }else{
+                    res.redirect("/");
+                }
+            })
+        }else{
+            res.redirect("/admin");
+        }
+    }else{
+        res.redirect("/login");
+    }
+})
+
+
 app.get("/products", function(req, res){
     getProducts(function(err, products){
         if(err){
@@ -184,6 +234,46 @@ app.post("/addToCart", function(req, res){
                 }
             }else{
                 throw new Error("Something went wrong in adding product to cart")
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
+
+
+app.post("/updateProduct", function(req, res){
+    if(req.session.username){
+        const updateProductObject = req.body ;
+        updateProduct(updateProductObject ,function(err){
+            if(err){
+                res.status(403);
+                res.json({error: err})
+            }else{
+                res.status(200);
+                res.json();
+            }
+        })
+    }else{
+        res.status(301);
+        res.json();
+    }
+})
+
+
+
+app.post("/deleteProduct", function(req, res){
+    if(req.session.username){
+        const deleteProductImage = req.body.image ;
+        deleteProduct(deleteProductImage ,function(err){
+            if(err){
+                res.status(403);
+                res.json({error: err})
+            }else{
+                res.status(200);
+                res.json();
             }
         })
     }else{
@@ -413,6 +503,83 @@ function getProducts(callback){
 }
 
 
+function addNewProduct(newProduct, newProductImageUrl, callback){
+    getProducts(function(err, products){
+        if(err){
+            callback(err);
+        }else{
+            const newProductObject = {
+                name: newProduct.productName,
+                image: newProductImageUrl,
+                price: newProduct.productPrice,
+                details: newProduct.productDetails,
+                stock: newProduct.productStock
+            }
+            products.unshift(newProductObject);
+            fs.writeFile("./public/products.json", JSON.stringify(products), function(error){
+                if(error){
+                    callback(error);
+                }else{
+                    callback(null)
+                }
+            })
+        }
+    })
+}
+
+
+function updateProduct(updateProductObject, callback){
+    getProducts(function(err, products){
+        if(err){
+            callback(err);
+        }else{
+            const updatedProductObject = products.filter(function(element){
+                if(element.image === updateProductObject.image){
+                    element.name = updateProductObject.name,
+                    element.price = updateProductObject.price,
+                    element.stock = updateProductObject.stock,
+                    element.details = updateProductObject.details
+                }
+                return element;
+            })
+            fs.writeFile("./public/products.json", JSON.stringify(updatedProductObject), function(error){
+                if(error){
+                    callback(error);
+                }else{
+                    callback(null)
+                }
+            })
+        }
+    })
+}
+
+
+function deleteProduct(deleteProductImage, callback){
+    getProducts(function(err, products){
+        if(err){
+            callback(err);
+        }else{
+            const updatedProducts = products.filter(function(element){
+                if(element.image !== deleteProductImage){
+                    return element;
+                }
+            })
+            fs.rm("public/"+deleteProductImage, function(err){
+                if(err){
+                    console.log(err);
+                }
+            })
+            fs.writeFile("./public/products.json", JSON.stringify(updatedProducts), function(error){
+                if(error){
+                    callback(error);
+                }else{
+                    callback(null)
+                }
+            })
+        }
+    })
+}
+
 
 async function validate(email, id) {
     const info = await transporter.sendMail({
@@ -420,6 +587,13 @@ async function validate(email, id) {
       to: email,
       subject: "Activate your shoes store account",
       html: `<h3>Dear customer,<a href= "http://localhost:3000/validate/${id}">Click here</a>! to activate your account</h3>`,
+    }).then(function(){
+        notifier.notify({
+            title: 'Verification link send!',
+            message: `Check ${email} mailbox and verify your account`,
+            sound: true,
+            wait: true
+          })
     });
 }
 
@@ -431,5 +605,12 @@ async function resetPassword(email, id) {
       to: email,
       subject: "Reset your shoes store password",
       html: `<h3>Dear customer,<a href= "http://localhost:3000/resetpassword/${id}">Click here</a>! to reset your password</h3>`,
+    }).then(function(){
+        notifier.notify({
+            title: 'Reset link send!',
+            message: `Check ${email} mailbox and reset your password`,
+            sound: true,
+            wait: true
+          })
     });
 }

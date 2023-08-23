@@ -18,6 +18,11 @@ header {
     align-content: center;
 }
 
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
 .container {
     text-align: center;
     margin: 0 auto;
@@ -47,7 +52,7 @@ header {
 }
 
 .right-button-container{
-    padding : 0 0 0 20% ;
+    padding : 0 0 0 10% ;
     margin: auto;
     float : left;
 }

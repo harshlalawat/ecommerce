@@ -1,0 +1,238 @@
+<%- include("partials/header.ejs", {username: username}) -%>
+
+
+<style>
+
+.admin-container {
+    max-width: 95%;
+    margin: 2rem auto;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+h2{
+    font-size: 2rem;
+    width: 100%;
+}
+
+.addProductContainer{
+    border: 1px solid #ccc;
+    background-color: rgb(0,0,0,0.7 );
+    max-width: 50%;
+}
+
+#addForm{
+    width: 90%;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 30px;
+}
+
+
+.addProductRow{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.addProductLabel{
+    justify-content: center;
+    width: 20%;
+}
+
+.addProductInput{
+    width: 75%;
+}
+
+.addProductButton{
+    background-color: #fff;
+    color: #000;
+    margin:0 auto;
+    align-items:end;
+    justify-content: end;
+}
+
+.addProductButton:hover{
+    background-color: #999;
+}
+
+
+input[type="text"]#addProductName,
+input[type="number"]#addProductPrice,
+input[type="number"]#addProductStock,
+input[type="file"]#addProductImage,
+textarea#addProductDetails {
+    width: 28rem;
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.updateContainer{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px;
+}
+
+.updateProductContainer {
+    background-color: white;
+border: 1px solid #ccc;
+border-radius: 5px;
+padding: 10px 10px;
+width: calc(30.5% - 20px);
+text-align: center;
+margin: 1rem 0.5rem;
+color: #000;
+}
+
+.updateProductContainer img {
+max-width: 100%;
+height: 10rem;
+}
+
+
+.updateProductRow{
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.updateProductLabel{
+    justify-content: center;
+    width: 32%;
+}
+
+.updateProductInput{
+    width: 68%;
+}
+
+.updateProductButton{
+    margin: 0 auto;
+}
+
+
+
+input[type="text"]#updateProductName,
+input[type="number"]#updateProductPrice,
+input[type="number"]#updateProductStock,
+input[type="file"]#updateProductImage,
+textarea#updateProductDetails {
+    width: 90%;
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+</style>
+
+<div class="admin-container addProductContainer">
+    
+    <h2>Add Product</h2>
+    <form id="addForm" method="post" action="/addProduct" enctype="multipart/form-data">
+
+        <div class="addProductRow">
+            <div class="addProductLabel">
+                <label for="addProductName">Product Name:</label>
+            </div>
+            <div class="addProductInput">
+                <input type="text" id="addProductName" name="productName" required>
+            </div>
+        </div>
+        <div class="addProductRow">
+            <div class="addProductLabel">
+                <label for="addProductPrice">Product Price:</label>
+            </div>
+            <div class="addProductInput">
+                <input type="number" id="addProductPrice" name="productPrice" required>
+            </div>
+        </div>
+        <div class="addProductRow">
+            <div class="addProductLabel">
+                <label for="addProductStock">Product Stock:</label>
+            </div>
+            <div class="addProductInput">
+                <input type="number" id="addProductStock" name="productStock" required>
+            </div>
+        </div>
+        <div class="addProductRow">
+            <div class="addProductLabel">
+                <label for="addProductDetails">Product Details:</label>
+            </div>
+            <div class="addProductInput">
+                <textarea name="productDetails" id="addProductDetails" required></textarea>
+            </div>
+        </div>
+        <div class="addProductRow">
+            <div class="addProductLabel">
+                <label for="addProductImage">Product Image:</label>
+            </div>
+            <div class="addProductInput">
+                <input type="file" id="addProductImage" name="productImage" onchange="fileValidation()" required>
+                <p id="new-product-validation" style="color: red; font-size: x-small; width: 100%"></p>
+            </div>
+        </div>
+        
+        <div class="addProductRow" >
+            <button class="button addProductButton" type="submit" id="addNewProductButton">Add Product</button>
+        </div>
+
+    </form>
+</div>
+
+<div class="admin-container updateContainer">
+    <h2>Update Product</h2>
+
+    <% products.forEach(function(element){ %>
+
+    <div class="updateProductContainer">
+        <img src="<%= element.image %>">
+        <div class="updateProductRow">
+            <div class="updateProductLabel">
+                <label for="updateProductName">Product Name:</label>
+            </div>
+            <div class="updateProductInput">
+                <input type="text" id="updateProductName" name="productName" value="<%= element.name %>" required>
+            </div>
+        </div>
+        <div class="updateProductRow">
+            <div class="updateProductLabel">
+                <label for="updateProductPrice">Product Price:</label>
+            </div>
+            <div class="updateProductInput">
+                <input type="number" id="updateProductPrice" name="productPrice" value="<%= element.price %>" required>
+            </div>
+        </div>
+        <div class="updateProductRow">
+            <div class="updateProductLabel">
+                <label for="updateProductStock">Product Stock:</label>
+            </div>
+            <div class="updateProductInput">
+                <input type="number" id="updateProductStock" name="productStock" value="<%= element.stock %>" required>
+            </div>
+        </div>
+        <div class="updateProductRow">
+            <div class="updateProductLabel">
+                <label for="updateProductDetails">Product Details:</label>
+            </div>
+            <div class="updateProductInput">
+                <textarea name="productDetails" id="updateProductDetails"><%= element.details %></textarea>
+            </div>
+        </div>
+
+        
+        <p id="update-product-validation" style="color: red; font-size: x-small; width: 100%"></p>
+        <div class="updateProductRow">
+            <button class="button updateProductButton" onclick="handleUpdateProductButton(this)" id="updateProductButton" >Update Product</button>
+            <button class="button updateProductButton" onclick="handleDeleteProductButton(this)" >Delete Product</button>
+        </div> 
+    </div>
+
+    <% }) %>
+
+</div> 
+
+
+<%- include("partials/footer.ejs") -%>
